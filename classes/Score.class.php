@@ -2,7 +2,7 @@
 /*
     This file is part of the eQual framework <http://www.github.com/cedricfrancoys/equal>
     Some Rights Reserved, Cedric Francoys, 2010-2021
-    Licensed under GNU GPL 3 license <http://www.gnu.org/licenses/>
+    Licensed under GNU LGPL 3 license <http://www.gnu.org/licenses/>
 */
 namespace lbdl;
 
@@ -23,14 +23,14 @@ class Score extends Model {
 
             'user_id' => [
                 'type'              => 'many2one',
-                'foreign_object'    => 'core\User',
+                'foreign_object'    => 'core\\User',
                 'description'       => "Player identifier (0 means guest user).",
                 'default'           => 0
             ],
 
             'map_id' => [
                 'type'              => 'many2one',
-                'foreign_object'    => 'lbdl\Map',
+                'foreign_object'    => 'lbdl\\Map',
                 'description'       => "Map.",
                 'default'           => 0
             ],

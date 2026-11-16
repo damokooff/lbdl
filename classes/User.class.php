@@ -2,11 +2,11 @@
 /*
     This file is part of the eQual framework <http://www.github.com/cedricfrancoys/equal>
     Some Rights Reserved, Cedric Francoys, 2010-2021
-    Licensed under GNU GPL 3 license <http://www.gnu.org/licenses/>
+    Licensed under GNU LGPL 3 license <http://www.gnu.org/licenses/>
 */
 namespace lbdl;
 
-class User extends \core\User {
+class User extends \\core\\User {
 
     public static function getColumns() {
         return [
@@ -30,7 +30,7 @@ class User extends \core\User {
 
             'liked_maps_ids' => [
                 'type'              => 'many2many',
-                'foreign_object'    => 'lbdl\Map',
+                'foreign_object'    => 'lbdl\\Map',
                 'foreign_field'     => 'liked_users_ids',
                 'rel_table'         => 'lbdl_rel_like_map_user',
                 'rel_foreign_key'   => 'map_id',
@@ -45,7 +45,7 @@ class User extends \core\User {
         $result = [];
         foreach($self as $id => $user) {
             $scores = Score::search(['user_id', '=', $id])->read(['tries'])->get(true);
-            $result[$id] = array_reduce($scores, function ($c, $a) { return $c+$a['tries'];}, 0);
+            $result[$id] = array_reduce($scores, function ($c, $a) { return $c + $a['tries']; }, 0);
         }
         return $result;
     }
@@ -62,5 +62,4 @@ class User extends \core\User {
         }
         return $result;
     }
-
 }

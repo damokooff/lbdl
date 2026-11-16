@@ -94,7 +94,7 @@ class Map extends Model {
 
             'liked_users_ids' => [
                 'type'              => 'many2many',
-                'foreign_object'    => 'lbdl\User',
+                'foreign_object'    => 'lbdl\\User',
                 'foreign_field'     => 'liked_maps_ids',
                 'rel_table'         => 'lbdl_rel_like_map_user',
                 'rel_foreign_key'   => 'user_id',
@@ -129,19 +129,21 @@ class Map extends Model {
         $self->read(['count_games', 'count_won']);
 
         foreach($self as $id => $map) {
-            $rate = ($map['count_games'])?$map['count_won']/$map['count_games']:1;
-            $result[$id] = 1;
-            if ($rate <= 0.5) {
-                $result[$id] = 2;
-            }
-            elseif ($rate <= 0.25) {
-                $result[$id] = 3;
+            $rate = ($map['count_games']) ? $map['count_won'] / $map['count_games'] : 1;
+            if ($rate <= 0.05) {
+                $result[$id] = 5;
             }
             elseif ($rate <= 0.15) {
                 $result[$id] = 4;
             }
-            elseif ($rate <= 0.05) {
-                $result[$id] = 5;
+            elseif ($rate <= 0.25) {
+                $result[$id] = 3;
+            }
+            elseif ($rate <= 0.5) {
+                $result[$id] = 2;
+            }
+            else {
+                $result[$id] = 1;
             }
         }
         return $result;
@@ -169,14 +171,16 @@ class Map extends Model {
 
         $self->read(['status', 'creator']);
 
-        $editable_fields = ['name','pos_x','pos_y','board','keys','time','difficulty'];
-        if( count(array_diff(array_keys($values), $editable_fields)) > 0 ) {
+        $editable_fields = ['name', 'pos_x', 'pos_y', 'board', 'keys', 'time', 'difficulty'];
+        $system_fields = ['count_games', 'count_likes', 'count_won'];
+        $fields = array_keys($values);
+
+        if(count(array_diff($fields, array_merge($editable_fields, $system_fields))) > 0) {
             return ['id' => ['disallowed_field' => 'Only editable fields can be updated by user.']];
         }
 
-        $allowed = ['count_games', 'count_likes', 'count_won'];
-
-        if(count(array_diff(array_keys($values), $allowed)) <= 0) {
+        // Counters can be changed by trusted internal actions without requiring map ownership.
+        if(count($fields) > 0 && count(array_diff($fields, $system_fields)) === 0) {
             return [];
         }
 
